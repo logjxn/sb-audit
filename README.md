@@ -89,6 +89,27 @@ It does **not** self-elevate. A script that spontaneously raises a UAC prompt is
 a habit I'm not comfortable with, especially in an auditing tool. It detects, instructs,
 and exits.
 
+## Where to install it
+
+Install this somewhere only administrators can write, under `Program Files`,
+or a checkout whose permissions you control. Not Downloads, not a per-user temp
+directory, not anywhere a standard user can drop a file.
+
+The reason is the same trust model as elevation, pointed the other way. The tool
+runs `boot_posture.ps1` from its own install directory, with the admin rights it
+just confirmed it has. If a non-admin can edit that script, they can have
+arbitrary code run as admin the next time someone audits the machine. 
+Same logic for the `powershell.exe` path: the tool calls it by absolute
+System32 path rather than by name, so a `powershell.exe` planted in the working
+directory can't win the search order. Both are the one assumption this tool
+makes explicit, the script and the shell it runs are trusted, so put them
+where only trusted accounts can touch them.
+
+`-ExecutionPolicy Bypass` is part of the same picture and isn't a hole:
+execution policy was never a security boundary (Microsoft says as much), and the
+script's integrity is already guaranteed by the install-location requirement
+above.
+
 ## Architecture
 
 PowerShell extracts, Python interprets.
