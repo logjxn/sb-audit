@@ -27,8 +27,8 @@ try {
 # --- TPM presence / enabled ---
 try {
     $tpm = Get-Tpm -ErrorAction Stop
-    $snapshot['tpmPresent'] = [bool]$tpm.TpmPresent
-    $snapshot['tpmEnabled'] = [bool]$tpm.TpmEnabled
+    $snapshot['tpmPresent'] = if ($null -ne $tpm.TpmPresent) { [bool]$tpm.TpmPresent } else { $null }
+    $snapshot['tpmEnabled'] = if ($null -ne $tpm.TpmEnabled) { [bool]$tpm.TpmEnabled } else { $null }
 } catch {
     $snapshot['tpmPresent'] = $null
     $snapshot['tpmEnabled'] = $null

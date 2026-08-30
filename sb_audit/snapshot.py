@@ -2,6 +2,7 @@ import json
 import subprocess
 from pathlib import Path
 from typing import Optional
+from .elevation import is_admin
 
 PS_SCRIPT = Path(__file__).parent.parent / "boot_posture.ps1"
 
@@ -28,6 +29,12 @@ def normalize_tpm_version(raw: Optional[str]) -> Optional[float]:
 
 def read_snapshot() -> dict:
     """Run the PowerShell extraction script and return the parsed snapshot."""
+    if not is_admin():
+        raise SnapshotError(
+            "This tool needs administrator rights to read Secure Boot and "
+            "TPM state.\nRight-click PowerShell and choose "
+            "'Run as administrator', then try again."
+        )
     try:
         result = subprocess.run(
             [
