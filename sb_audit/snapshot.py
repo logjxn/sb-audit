@@ -16,6 +16,7 @@ POWERSHELL = os.path.join(
     "System32", "WindowsPowerShell", "v1.0", "powershell.exe",
 )
 
+
 class SnapshotError(Exception):
     """Raised when the extraction layer can't produce a usable snapshot."""
 
@@ -32,7 +33,7 @@ def normalize_tpm_version(raw: Optional[str]) -> Optional[float]:
         return None
     first = raw.split(",")[0].strip()
     try:
-        return float(first)
+        value = float(first)
     except ValueError:
         return None
     # Reject inf/nan so a garbage token can't render as a bogus PASS
@@ -51,13 +52,15 @@ def read_snapshot() -> dict:
     try:
         result = subprocess.run(
             [
-                "powershell",
+                POWERSHELL,
                 "-NoProfile",
                 "-ExecutionPolicy", "Bypass",
                 "-File", str(PS_SCRIPT),
             ],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=60,
         )
     except FileNotFoundError as exc:
