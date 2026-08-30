@@ -1,6 +1,8 @@
 import sys
 
+from .render import render
 from .snapshot import SnapshotError, read_snapshot
+from .walker import walk_boot_path, walk_checklist
 
 
 def main() -> int:
@@ -9,7 +11,7 @@ def main() -> int:
     except SnapshotError as exc:
         print(exc, file=sys.stderr)
         return 1
-    print(snapshot)
+    print(render(walk_boot_path(snapshot), walk_checklist(snapshot)))
     return 0
 
 
