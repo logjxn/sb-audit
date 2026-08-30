@@ -24,6 +24,7 @@ This tool reports the state and directs the fix.
 ## Usage
 
 Requires Windows and administrator rights.
+Requires python.
 
 ```
 python -m sb_audit
