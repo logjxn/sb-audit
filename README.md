@@ -4,6 +4,8 @@ Audits Windows boot posture, including Secure Boot, TPM, and firmware mode. Expl
 
 Read-only. It will NEVER change firmware or disk state.
 
+This tool helps you enable Secure Boot and TPM properly. It doesn't bypass, disable, or circumvent them.
+
 ## Why
 
 I worked with a relative who couldn't launch Call of Duty. The anticheat wanted Secure Boot and
