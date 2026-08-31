@@ -4,7 +4,7 @@ Audits Windows boot posture, including Secure Boot, TPM, and firmware mode. Expl
 
 Read-only. It will NEVER change firmware or disk state.
 
-This tool helps you enable Secure Boot and TPM properly. It doesn't bypass, disable, or circumvent them.
+This tool helps diagnose what is preventing a system from meeting Secure Boot and TPM requirements. It doesn't bypass, disable, or circumvent them.
 
 ## Why
 
