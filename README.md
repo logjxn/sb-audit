@@ -10,7 +10,7 @@ This tool helps diagnose what is preventing a system from meeting Secure Boot an
 
 I worked with a relative who couldn't launch Call of Duty. The anticheat wanted Secure Boot and
 TPM 2.0; and his machine had neither enabled. He didn't know what either of those
-were, and the error message didn't give him any clues at all. I had to pull up and sit at the
+were, and the error message didn't give him any clues at all. I had to go to the
 machine to work out what was wrong. It was fun, but it drew my attention to a gap between tooling
 and non-technical users.
 
@@ -18,8 +18,8 @@ Most tools that already exist tell you *whether* Secure Boot is on. None of them
 tell you *why you can't turn it on yet*, which is the part that actually blocks
 someone. Secure Boot can't be enabled until the firmware is in UEFI mode, which
 usually can't happen until the disk is converted to GPT. Telling someone "enable
-Secure Boot" when they're three steps behind sends them into a firmware menu
-looking for an option that isn't there.
+Secure Boot" while they have unmet pre-requisites sends them across reboots trying
+to find options in the BIOS that don't exist.
 
 This tool reports the state and directs the fix.
 
@@ -97,9 +97,9 @@ Install this somewhere only administrators can write, under `Program Files`,
 or a checkout whose permissions you control. Not Downloads, not a per-user temp
 directory, not anywhere a standard user can drop a file.
 
-The reason is the same trust model as elevation, pointed the other way. The tool
-runs `boot_posture.ps1` from its own install directory, with the admin rights it
-just confirmed it has. If a non-admin can edit that script, they can have
+The reason is the same trust model as elevation. The tool runs `boot_posture.ps1` from 
+its own install directory, with the admin rights it just confirmed it has. 
+If a non-admin can edit that script, they can have
 arbitrary code run as admin the next time someone audits the machine. 
 Same logic for the `powershell.exe` path: the tool calls it by absolute
 System32 path rather than by name, so a `powershell.exe` planted in the working
@@ -142,34 +142,25 @@ Python's job.
 **Audit only.** Every setting here: Secure Boot, TPM, boot mode, lives
 behind a reboot in a vendor menu and can't be changed from the OS. The one fix
 that *is* scriptable, `mbr2gpt`, is destructive-adjacent enough that it shouldn't
-be owned by a diagnostic tool. So the blast radius is zero by design.
+be owned by a diagnostic tool. So the blast radius is zero intentionally.
 
 **A sequence and a checklist, not one list.** The boot path is ordered, each
 step gates the next. TPM requirements are separate and don't wait on it. Flattening
 them into a single list loses the distinction that makes the output actionable.
 
-The checklist turned out not to be entirely flat. TPM requirements form their
+The checklist did turn out not to be entirely flat. TPM requirements form their
 own small chain plus one independent check:
 
     TPM present
         ↓
     TPM enabled
 
-    TPM version 2.0   — standalone, checked whenever it's detectable
+    TPM version 2.0  - standalone, checked whenever it's detectable
 
-Presence gates enabled, because telling someone to enable a chip they don't
-have is the same class of error as the false negatives above. Version stands
-apart, coming from a different source (`Win32_Tpm`) than the presence and
+Version stands apart, coming from a different source (`Win32_Tpm`) than the presence and
 enabled flags (`Get-Tpm`), so it can often be read even when the TPM is
 disabled. When it can't, it reports unknown rather than guessing.
 
 **Four states, not two.** `pass` / `fail` / `locked` / `unknown`. `locked` is the
-dependency chain made visible. `unknown` exists because the tool would otherwise
+dependency chain visible. `unknown` exists because the tool would otherwise
 have to guess, and a confident wrong answer is worse than an admitted gap.
-
-**`null` means unknown, never absent.** A missing value in a snapshot means the 
-extraction layer couldn't determine the state. Absence is represented as false,
-uncertainty is null. Because elevation is checked before extraction begins, permission
-failures are rejected early rather than silently degrading into unknown results. 
-But hardware, firmware, or API failures can still occur, so the distinction between false and null 
-remains important.
