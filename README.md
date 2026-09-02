@@ -16,12 +16,11 @@ and non-technical users.
 
 Most tools that already exist tell you *whether* Secure Boot is on. None of them
 tell you *why you can't turn it on yet*, which is the part that actually blocks
-someone. Secure Boot can't be enabled until the firmware is in UEFI mode, which
-usually can't happen until the disk is converted to GPT. Telling someone "enable
-Secure Boot" while they have unmet pre-requisites sends them across reboots trying
-to find options in the BIOS that don't exist.
+someone. Secure Boot has pre-requisites like UEFI and GPT, that these tools don't
+mention. Telling someone "enable Secure Boot" while they haven't met these requirements
+sends them across reboots trying to find options in the BIOS that don't exist.
 
-This tool reports the state and directs the fix.
+This tool addresses this by reporting the state and directing the fix.
 
 ## Usage
 
@@ -82,13 +81,13 @@ The first output says there's no TPM and Secure Boot is unsupported. My machine
 has a working TPM 2.0 with Secure Boot enabled. `Get-ComputerInfo` reads fine
 without elevation; `Confirm-SecureBootUEFI`, `Get-SecureBootUEFI` and `Get-Tpm`
 do not, and a `[bool]` cast over an unreadable property was turning
-"couldn't read this" into "definitively absent".
+"I can't read this" into "it's definitively absent".
 
-So the tool refuses to run without elevation rather than degrade. A misleading answer
-is worse than having no answer.
+So the tool refuses to run without elevation rather than degrade. I would prefer no
+answer over misleading ones.
 
 It does **not** self-elevate. A script that spontaneously raises a UAC prompt is
-a habit I'm not comfortable with, especially in an auditing tool. It detects, instructs,
+a habit I'm not comfortable with, especially for an auditing tool. It detects, instructs,
 and exits.
 
 ## Where to install it
@@ -97,12 +96,12 @@ Install this somewhere only administrators can write, under `Program Files`,
 or a checkout whose permissions you control. Not Downloads, not a per-user temp
 directory, not anywhere a standard user can drop a file.
 
-The reason is the same trust model as elevation. The tool runs `boot_posture.ps1` from 
-its own install directory, with the admin rights it just confirmed it has. 
-If a non-admin can edit that script, they can have
-arbitrary code run as admin the next time someone audits the machine. 
+The reason is the same trust concept as elevation. The tool runs `boot_posture.ps1` from 
+its own install directory, with admin rights it just confirmed it has. 
+If a non-admin can edit that script, they could potentially have
+their own code run as admin the next time someone audits the machine. 
 Same logic for the `powershell.exe` path: the tool calls it by absolute
-System32 path rather than by name, so a `powershell.exe` planted in the working
+System32 path rather than by name, so a `powershell.exe` added in the working
 directory can't win the search order. Both are the one assumption this tool
 makes explicit, the script and the shell it runs are trusted, so put them
 where only trusted accounts can touch them.
@@ -126,11 +125,11 @@ sb_audit/
   __main__.py      entry point
 ```
 
-The split matters because of where the testing lives. PowerShell can only be
-exercised on a real elevated Windows box in whatever state that box happens to be
+The split is important because of where the testing lives. PowerShell can only be
+exercised on a Windows box in whatever state that box happens to be
 in. Python logic is a pure function over a dict, so it can be run against
-fabricated snapshots: legacy firmware, Setup Mode, a missing TPM, a TPM 1.2 which are
-states my machine will never produce. Keeping the PowerShell layer as thin as
+testing snapshots: legacy firmware, Setup Mode, a missing TPM, a TPM 1.2 which are
+states my machine would never produce. Keeping the PowerShell layer as thin as
 possible keeps the untestable surface as small as possible.
 
 The dividing line: PowerShell *unwraps* (`.Bytes[0]` → `0`), Python *interprets*
@@ -146,9 +145,9 @@ be owned by a diagnostic tool. So the blast radius is zero intentionally.
 
 **A sequence and a checklist, not one list.** The boot path is ordered, each
 step gates the next. TPM requirements are separate and don't wait on it. Flattening
-them into a single list loses the distinction that makes the output actionable.
+them into a single list loses that distinction that makes the output actionable.
 
-The checklist did turn out not to be entirely flat. TPM requirements form their
+The checklist isn't entirely flat. TPM requirements form their
 own small chain plus one independent check:
 
     TPM present
@@ -163,4 +162,4 @@ disabled. When it can't, it reports unknown rather than guessing.
 
 **Four states, not two.** `pass` / `fail` / `locked` / `unknown`. `locked` is the
 dependency chain visible. `unknown` exists because the tool would otherwise
-have to guess, and a confident wrong answer is worse than an admitted gap.
+have to guess, and I'll take a gap over a wrong answer.
