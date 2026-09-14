@@ -1,24 +1,15 @@
 # sb-audit
 
-Audits Windows boot posture, including Secure Boot, TPM, and firmware mode. Explains what's blocking what.
-
-Read-only. It will NEVER change firmware or disk state.
-
-This tool helps diagnose what is preventing a system from meeting Secure Boot and TPM requirements. It doesn't bypass, disable, or circumvent them.
+A read-only Windows endpoint security auditor. Maps Secure Boot, TPM, and firmware state as a dependency chain and tells you where remediation actually starts.
 
 ## Why
 
-I worked with a relative who couldn't launch Call of Duty. The anticheat wanted Secure Boot and
-TPM 2.0; and his machine had neither enabled. He didn't know what either of those
-were, and the error message didn't give him any clues at all. I had to go to the
-machine to work out what was wrong. It was fun, but it drew my attention to a gap between tooling
-and non-technical users.
+I ran into this gap helping a family member troubleshoot a machine that had neither Secure Boot nor TPM enabled, 
+and no tooling that explained what was actually blocking what.
 
-Most tools that already exist tell you *whether* Secure Boot is on. None of them
-tell you *why you can't turn it on yet*, which is the part that actually blocks
-someone. Secure Boot has pre-requisites like UEFI and GPT, that these tools don't
-mention. Telling someone "enable Secure Boot" while they haven't met these requirements
-sends them across reboots trying to find options in the BIOS that don't exist.
+Most existing tools report whether Secure Boot is on. None of them report why you can't turn it on yet,
+the prerequisite chain (UEFI, GPT) that actually blocks remediation. Telling someone "enable Secure Boot" 
+when they haven't met the prerequisites sends them into reboots looking for options that don't exist.
 
 This tool addresses this by reporting the state and directing the fix.
 
