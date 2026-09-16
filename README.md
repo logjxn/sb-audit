@@ -151,6 +151,6 @@ Version stands apart, coming from a different source (`Win32_Tpm`) than the pres
 enabled flags (`Get-Tpm`), so it can often be read even when the TPM is
 disabled. When it can't, it reports unknown rather than guessing.
 
-**Four states, not two.** `pass` / `fail` / `locked` / `unknown`. `locked` is the
-dependency chain visible. `unknown` exists because the tool would otherwise
+**Four states**: `pass` / `fail` / `locked` / `unknown`. `locked` is the
+dependency chain. `unknown` exists because the tool would otherwise
 have to guess, and I'll take a gap over a wrong answer.
