@@ -10,16 +10,11 @@ This tool helps diagnose what is preventing a system from meeting Secure Boot an
 
 I worked with a relative who couldn't launch Call of Duty. The anticheat wanted Secure Boot and
 TPM 2.0; and his machine had neither enabled. He didn't know what either of those
-were, and the error message didn't give him any clues at all. I had to go to the
-machine to work out what was wrong. It was fun, but it drew my attention to a gap between tooling
-and non-technical users.
+were, and the error message didn't give him any clues at all. 
 
 Most tools that already exist tell you *whether* Secure Boot is on. None of them
 tell you *why you can't turn it on yet*, which is the part that actually blocks
-someone. Secure Boot can't be enabled until the firmware is in UEFI mode, which
-usually can't happen until the disk is converted to GPT. Telling someone "enable
-Secure Boot" while they haven't met these requirements sends them across reboots
-trying to find options in the BIOS that don't exist.
+someone. 
 
 This tool addresses this by reporting the state and directing the fix.
 
@@ -79,30 +74,24 @@ Elevated:
 ```
 
 The first output says there's no TPM and Secure Boot is unsupported. My machine
-has a working TPM 2.0 with Secure Boot enabled. `Get-ComputerInfo` reads fine
-without elevation; `Confirm-SecureBootUEFI`, `Get-SecureBootUEFI` and `Get-Tpm`
-do not. No administrative access turned "I can't read this" into "it's absent".
+has a working TPM 2.0 with Secure Boot enabled. 
 
-So the tool refuses to run without elevation rather than degrade. I would prefer no
-answer over misleading ones.
+So the tool refuses to run without elevation rather than degrade. 
 
 It does **not** self-elevate. A script that spontaneously raises a UAC prompt is
-a habit I'm not comfortable with, especially for an auditing tool. It detects, instructs,
-and exits.
+a habit I'm not comfortable with, especially for an auditing tool. 
 
 ## Where to install it
 
 Install this somewhere only administrators can write, under `Program Files`,
-or a checkout whose permissions you control. Not Downloads, not a per-user temp
-directory, not anywhere a standard user can drop a file.
+or a checkout whose permissions you control. 
 
-The reason is the same trust concept as elevation. The tool runs `boot_posture.ps1` from
-its own install directory, with the admin rights it just confirmed it has.
-If a non-admin can edit that script, they could potentially run their own code
-as admin the next time someone audits the machine.
-Same logic for the `powershell.exe` path: the tool calls it by absolute
-System32 path rather than by name, so a `powershell.exe` added in the working
-directory can't win the search order. 
+The tool runs `boot_posture.ps1` from its own install directory, with admin rights. Therefore, a non-admin could run their own
+code if they can edit the script.
+
+To further protect against this, the tool calls Powershell by absolute
+System32 path, so a `powershell.exe` added in the working
+directory cannot win the search order.
 
 ## Architecture
 
@@ -118,27 +107,15 @@ sb_audit/
   __main__.py      entry point
 ```
 
-PowerShell can only be exercised on a real elevated Windows box in whatever state
-that box happens to be in. Python logic is a pure function over a dict, so it can
-be run against testing snapshots: legacy firmware, Setup Mode, a missing TPM, a
-TPM 1.2 which are states my machine would never produce. Keeping the PowerShell
-layer as thin as possible keeps the untestable surface as small as possible.
-
-The dividing line: PowerShell *unwraps* (`.Bytes[0]` → `0`), Python *interprets*
-(`0` → keys are enrolled). Anything requiring knowledge of what a value means is
-Python's job.
+While PowerShell can only be mainly exercised in a Windows box (and in that boot state),
+Python can be utilized anywhere, allowing testing to be done on fake snapshots.
 
 ## Design decisions
 
-**Audit only.** Every setting here: Secure Boot, TPM, boot mode, lives
-behind a reboot in a vendor menu and can't be changed from the OS. The one fix
-that *is* scriptable, `mbr2gpt`, is destructive-adjacent enough that it shouldn't
-be owned by a diagnostic tool. So the blast radius is zero.
+**Audit only.** Every setting here: Secure Boot, TPM, boot mode, lives in UEFI and can't be changed from the OS. 
+The one step that is scriptable, `mbr2gpt`, can be potentially destructive enough that it shouldn't
+be performed by an audit tool.
 
 **A sequence and a checklist**, with the boot path being ordered, each step gating
-the next. TPM requirements are separate and don't wait on it. Flattening them into
-a single list loses that distinction that makes the output informative.
-
-**Four states, not two.** `pass` / `fail` / `locked` / `unknown`. `locked` is the
-dependency chain visible. `unknown` exists because the tool would otherwise
-have to guess, and a confident wrong answer is worse than an admitted gap.
+the next. TPM requirements are separate and don't wait on it. Separating these helps
+make the output more actionable.
