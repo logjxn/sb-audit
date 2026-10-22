@@ -9,7 +9,6 @@ GLYPH = {
 
 
 def _first_actionable(findings: list[Finding]) -> Finding | None:
-    """The first step the user can actually do something about."""
     for f in findings:
         if f.state in (State.FAIL, State.UNKNOWN):
             return f

@@ -18,10 +18,8 @@ class Finding:
 
 
 def walk_boot_path(snap: dict) -> list[Finding]:
-    """Ordered chain: each step gates the next."""
     findings = []
 
-    # Secure Boot being on proves the entire chain beneath it.
     if snap.get("secureBoot") is True:
         return [
             Finding("Firmware is in UEFI mode", State.PASS),
@@ -29,7 +27,6 @@ def walk_boot_path(snap: dict) -> list[Finding]:
             Finding("Secure Boot enabled", State.PASS),
         ]
 
-    # Step 1 -- firmware mode
     fw = snap.get("firmwareType")
     if fw == "Uefi":
         step1 = Finding("Firmware is in UEFI mode", State.PASS)
@@ -44,7 +41,6 @@ def walk_boot_path(snap: dict) -> list[Finding]:
                         "Could not read the firmware mode.")
     findings.append(step1)
 
-    # Step 2 -- keys enrolled
     if step1.state is not State.PASS:
         findings.append(Finding("Secure Boot keys enrolled", State.LOCKED,
                                 "Locked until the firmware is in UEFI mode."))
@@ -62,7 +58,6 @@ def walk_boot_path(snap: dict) -> list[Finding]:
             findings.append(Finding("Secure Boot keys enrolled", State.UNKNOWN,
                                     "Could not read the Secure Boot key state."))
 
-    # Step 3 -- Secure Boot itself
     if findings[-1].state is not State.PASS:
         findings.append(Finding("Secure Boot enabled", State.LOCKED,
                                 "Locked until the keys above are enrolled."))
@@ -79,7 +74,6 @@ def walk_boot_path(snap: dict) -> list[Finding]:
 
 
 def walk_checklist(snap: dict) -> list[Finding]:
-    """Standalone requirements -- no ordering between them."""
     findings = []
 
     present = snap.get("tpmPresent")

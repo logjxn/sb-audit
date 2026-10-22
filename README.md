@@ -10,13 +10,13 @@ This tool helps diagnose what is preventing a system from meeting Secure Boot an
 
 I worked with a relative who couldn't launch Call of Duty. The anticheat wanted Secure Boot and
 TPM 2.0; and his machine had neither enabled. He didn't know what either of those
-were, and the error message didn't give him any clues at all. 
+were, and the error message didn't give him any clues at all.
 
 Most tools that already exist tell you *whether* Secure Boot is on. None of them
 tell you *why you can't turn it on yet*, which is the part that actually blocks
-someone. 
+someone.
 
-This tool addresses this by reporting the state and directing the fix.
+This tool addresses this by reporting the state and directing a fix.
 
 ## Usage
 
@@ -74,17 +74,17 @@ Elevated:
 ```
 
 The first output says there's no TPM and Secure Boot is unsupported. My machine
-has a working TPM 2.0 with Secure Boot enabled. 
+has a working TPM 2.0 with Secure Boot enabled.
 
-So the tool refuses to run without elevation rather than degrade. 
+So the tool refuses to run without elevation rather than degrade.
 
 It does **not** self-elevate. A script that spontaneously raises a UAC prompt is
-a habit I'm not comfortable with, especially for an auditing tool. 
+a habit I'm not comfortable with, especially for an auditing tool.
 
 ## Where to install it
 
 Install this somewhere only administrators can write, under `Program Files`,
-or a checkout whose permissions you control. 
+or a checkout whose permissions you control.
 
 The tool runs `boot_posture.ps1` from its own install directory, with admin rights. Therefore, a non-admin could run their own
 code if they can edit the script.
@@ -112,10 +112,10 @@ Python can be utilized anywhere, allowing testing to be done on fake snapshots.
 
 ## Design decisions
 
-**Audit only.** Every setting here: Secure Boot, TPM, boot mode, lives in UEFI and can't be changed from the OS. 
+**Audit only.** Every setting here: Secure Boot, TPM, boot mode, lives in UEFI and can't be changed from the OS.
 The one step that is scriptable, `mbr2gpt`, can be potentially destructive enough that it shouldn't
 be performed by an audit tool.
 
-**A sequence and a checklist**, with the boot path being ordered, each step gating
+**A sequence + checklist**, with the boot path being ordered, each step preceding
 the next. TPM requirements are separate and don't wait on it. Separating these helps
 make the output more actionable.

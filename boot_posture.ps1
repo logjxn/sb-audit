@@ -34,7 +34,6 @@ try {
     $snapshot['tpmEnabled'] = $null
 }
 
-# --- TPM spec version (raw string — Python parses) ---
 try {
     $win32Tpm = Get-CimInstance -Namespace 'root\cimv2\Security\MicrosoftTpm' `
                                 -ClassName Win32_Tpm -ErrorAction Stop
