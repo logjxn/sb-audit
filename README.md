@@ -6,18 +6,6 @@ Read-only. It will NEVER change firmware or disk state.
 
 This tool helps diagnose what is preventing a system from meeting Secure Boot and TPM requirements. It doesn't bypass, disable, or circumvent them.
 
-## Why
-
-I worked with a relative who couldn't launch Call of Duty. The anticheat wanted Secure Boot and
-TPM 2.0; and his machine had neither enabled. He didn't know what either of those
-were, and the error message didn't give him any clues at all.
-
-Most tools that already exist tell you *whether* Secure Boot is on. None of them
-tell you *why you can't turn it on yet*, which is the part that actually blocks
-someone.
-
-This tool addresses this by reporting the state and directing a fix.
-
 ## Usage
 
 Requires Windows and administrator rights.
@@ -28,8 +16,6 @@ python -m sb_audit
 ```
 
 ## Sample output
-
-A machine that boots the old way:
 
 ```
 BOOT PATH  (do these in order)
@@ -76,22 +62,18 @@ Elevated:
 The first output says there's no TPM and Secure Boot is unsupported. My machine
 has a working TPM 2.0 with Secure Boot enabled.
 
-So the tool refuses to run without elevation rather than degrade.
-
 It does **not** self-elevate. A script that spontaneously raises a UAC prompt is
 a habit I'm not comfortable with, especially for an auditing tool.
 
 ## Where to install it
 
-Install this somewhere only administrators can write, under `Program Files`,
-or a checkout whose permissions you control.
+Install this somewhere only administrators can write.
 
 The tool runs `boot_posture.ps1` from its own install directory, with admin rights. Therefore, a non-admin could run their own
 code if they can edit the script.
 
 To further protect against this, the tool calls Powershell by absolute
-System32 path, so a `powershell.exe` added in the working
-directory cannot win the search order.
+System32 path.
 
 ## Architecture
 
@@ -108,14 +90,14 @@ sb_audit/
 ```
 
 While PowerShell can only be mainly exercised in a Windows box (and in that boot state),
-Python can be utilized anywhere, allowing testing to be done on fake snapshots.
+Python can be utilized anywhere, allowing testing to be done everywhere.
 
 ## Design decisions
 
 **Audit only.** Every setting here: Secure Boot, TPM, boot mode, lives in UEFI and can't be changed from the OS.
-The one step that is scriptable, `mbr2gpt`, can be potentially destructive enough that it shouldn't
-be performed by an audit tool.
+The one step that is scriptable, `mbr2gpt`, can be potentially destructive enough that this tool shouldn't
+do it.
 
 **A sequence + checklist**, with the boot path being ordered, each step preceding
 the next. TPM requirements are separate and don't wait on it. Separating these helps
-make the output more actionable.
+make the output more understandable.
