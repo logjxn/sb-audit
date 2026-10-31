@@ -2,14 +2,13 @@
 
 Audits Windows boot posture, including Secure Boot, TPM, and firmware mode. Explains what's blocking what.
 
-Read-only. It will NEVER change firmware or disk state.
+sb-audit reports what needs attention but never attempts to change system configuration. Remediation is left to the user.
 
 This tool helps diagnose what is preventing a system from meeting Secure Boot and TPM requirements. It doesn't bypass, disable, or circumvent them.
 
 ## Usage
 
-Requires Windows and administrator rights.
-Requires python.
+Requires Windows, Python, and administrator rights.
 
 ```
 python -m sb_audit
@@ -37,67 +36,19 @@ OTHER REQUIREMENTS  (any order)
 4 item(s) need attention. Start with the boot path above.
 ```
 
-`[x]` pass, `[ ]` fail, `[-]` locked behind an earlier step, `[?]` couldn't
-be determined.
+- `[x]` pass
+- `[ ]` fail
+- `[-]` locked
+- `[?]` couldn't be determined.
 
-## Why administrator rights are required
+## Administrator privileges
 
-Without elevation the tool reports confident, plausible,
-completely wrong results.
+Administrator rights are required for accurate hardware and firmware reporting. Without elevation, Windows can return incomplete or misleading results.
 
-Same machine, five minutes apart. Unelevated:
+sb-audit does not elevate itself. Run it from an administrator terminal.
 
-```
-{'firmwareType': 'Uefi', 'secureBoot': 'unsupported', 'setupMode': None,
- 'tpmPresent': False, 'tpmEnabled': False, 'tpmSpecVersion': None}
-```
+## Installation security 
 
-Elevated:
+Install sb-audit somewhere only administrators can modify.
 
-```
-{'firmwareType': 'Uefi', 'secureBoot': True, 'setupMode': 0,
- 'tpmPresent': True, 'tpmEnabled': True, 'tpmSpecVersion': 2.0}
-```
-
-The first output says there's no TPM and Secure Boot is unsupported. My machine
-has a working TPM 2.0 with Secure Boot enabled.
-
-It does **not** self-elevate. A script that spontaneously raises a UAC prompt is
-a habit I'm not comfortable with, especially for an auditing tool.
-
-## Where to install it
-
-Install this somewhere only administrators can write.
-
-The tool runs `boot_posture.ps1` from its own install directory, with admin rights. Therefore, a non-admin could run their own
-code if they can edit the script.
-
-To further protect against this, the tool calls Powershell by absolute
-System32 path.
-
-## Architecture
-
-PowerShell extracts, Python interprets.
-
-```
-boot_posture.ps1   reads the machine, unwraps .NET containers, emits flat JSON
-sb_audit/
-  elevation.py     privilege check
-  snapshot.py      runs the script, parses JSON, normalises the TPM version
-  walker.py        turns a snapshot into findings
-  render.py        turns findings into text
-  __main__.py      entry point
-```
-
-While PowerShell can only be mainly exercised in a Windows box (and in that boot state),
-Python can be utilized anywhere, allowing testing to be done everywhere.
-
-## Design decisions
-
-**Audit only.** Every setting here: Secure Boot, TPM, boot mode, lives in UEFI and can't be changed from the OS.
-The one step that is scriptable, `mbr2gpt`, can be potentially destructive enough that this tool shouldn't
-do it.
-
-**A sequence + checklist**, with the boot path being ordered, each step preceding
-the next. TPM requirements are separate and don't wait on it. Separating these helps
-make the output more understandable.
+The tool executes `boot_posture.ps1` from its installation directory with administrator privileges. If a non-administrator can modify that script, they could execute arbitrary code with elevated permissions.
