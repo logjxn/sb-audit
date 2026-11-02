@@ -30,7 +30,7 @@ def walk_boot_path(snap: dict) -> list[Finding]:
     fw = snap.get("firmwareType")
     if fw == "Uefi":
         step1 = Finding("Firmware is in UEFI mode", State.PASS)
-    elif fw == "Legacy":
+    elif fw == "Bios":
         step1 = Finding(
             "Firmware is in UEFI mode", State.FAIL,
             "Your PC is booting the old way. Convert the disk with mbr2gpt, "
