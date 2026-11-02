@@ -2,6 +2,8 @@
 
 Audits Windows boot posture, including Secure Boot, TPM, and firmware mode. Explains what's blocking what.
 
+![sb_audit on a legacy PC with TPM off](assets/sb-audit-demo.svg)
+
 sb-audit reports what needs attention but never attempts to change system configuration. Remediation is left to the user.
 
 This tool helps diagnose what is preventing a system from meeting Secure Boot and TPM requirements. It doesn't bypass, disable, or circumvent them.
