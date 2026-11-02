@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1154" height="504" viewBox="0 0 1154 504" role="img" aria-labelledby="t">
+  <title id="t">python -m sb_audit in an administrator PowerShell on a PC that boots in legacy BIOS mode with the TPM turned off: step 1 of the boot path is the firmware mode, steps 2 and 3 are locked until it is fixed, and the report says to convert the disk with mbr2gpt and switch the firmware to UEFI, then enable the TPM.</title>
+  <style>
+    text { font-family: 'DejaVu Sans Mono', 'JetBrains Mono', 'Cascadia Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; }
+    .muted { fill: #A99270; }
+    .tan { fill: #D6B98C; }
+    .in { animation: in .25s ease-out both; }
+    .key { animation: in .01s linear both; }
+    .wait { opacity: 0; animation: wait 1s linear forwards; }
+    .cur { animation: in .01s linear both, blink 1.1s step-end infinite; }
+    @keyframes in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes wait { 0%, 99% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes blink { 50% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+
+  <rect x="1" y="1" width="1152" height="502" rx="14" fill="#45392F" stroke="#695644" stroke-width="2"/>
+  <path d="M2 40V15A13 13 0 0 1 15 2H1139A13 13 0 0 1 1152 15V40Z" fill="#3B3129"/>
+  <path d="M2 40H1152" stroke="#695644" stroke-width="2"/>
+  <text x="24" y="26" class="muted">Administrator: PowerShell</text>
+  <g stroke="#695644" stroke-width="1.6" fill="none"><path d="M1032 21h12"/><rect x="1069" y="15" width="11" height="11" rx="1"/><path d="M1113 15l11 11M1124 15l-11 11"/></g>
+
+  <text x="40" y="78" xml:space="preserve"><tspan fill="#81ADDB">PS</tspan><tspan fill="#A99270"> C:\Users\logjxn\Projects\sb-audit&gt; </tspan></text>
+  <text x="360.29" y="78" class="tan key" style="animation-delay:0.50s">p</text>
+  <text x="368.72" y="78" class="tan key" style="animation-delay:0.58s">y</text>
+  <text x="377.15" y="78" class="tan key" style="animation-delay:0.66s">t</text>
+  <text x="385.58" y="78" class="tan key" style="animation-delay:0.74s">h</text>
+  <text x="394.01" y="78" class="tan key" style="animation-delay:0.82s">o</text>
+  <text x="402.43" y="78" class="tan key" style="animation-delay:0.90s">n</text>
+  <text x="419.29" y="78" class="tan key" style="animation-delay:1.06s">-</text>
+  <text x="427.72" y="78" class="tan key" style="animation-delay:1.14s">m</text>
+  <text x="444.58" y="78" class="tan key" style="animation-delay:1.30s">s</text>
+  <text x="453.01" y="78" class="tan key" style="animation-delay:1.38s">b</text>
+  <text x="461.43" y="78" class="tan key" style="animation-delay:1.46s">_</text>
+  <text x="469.86" y="78" class="tan key" style="animation-delay:1.54s">a</text>
+  <text x="478.29" y="78" class="tan key" style="animation-delay:1.62s">u</text>
+  <text x="486.72" y="78" class="tan key" style="animation-delay:1.70s">d</text>
+  <text x="495.15" y="78" class="tan key" style="animation-delay:1.78s">i</text>
+  <text x="503.58" y="78" class="tan key" style="animation-delay:1.86s">t</text>
+  <rect x="40" y="86" width="9" height="17" fill="#D6B98C" class="wait" style="animation-delay:2.24s;animation-duration:1.60s"/>
+  <text x="40" y="100" class="in" style="animation-delay:3.84s" xml:space="preserve"><tspan fill="#FFFFFF" font-weight="700">BOOT PATH</tspan><tspan fill="#A99270">  (do these in order)</tspan></text>
+  <text x="40" y="122" class="in" style="animation-delay:3.89s" xml:space="preserve"><tspan fill="#D6B98C">  </tspan><tspan fill="#E08A7E" font-weight="700">[ ]</tspan><tspan fill="#D6B98C"> 1. Firmware is in UEFI mode</tspan><tspan fill="#81ADDB" font-weight="700">   &lt;- start here</tspan></text>
+  <text x="40" y="144" class="in" style="animation-delay:3.94s" xml:space="preserve"><tspan fill="#D6B98C">  </tspan><tspan fill="#A99270" font-weight="700">[-]</tspan><tspan fill="#D6B98C"> 2. Secure Boot keys enrolled</tspan></text>
+  <text x="40" y="166" class="in" style="animation-delay:3.99s" xml:space="preserve"><tspan fill="#A99270">        Locked until the firmware is in UEFI mode.</tspan></text>
+  <text x="40" y="188" class="in" style="animation-delay:4.04s" xml:space="preserve"><tspan fill="#D6B98C">  </tspan><tspan fill="#A99270" font-weight="700">[-]</tspan><tspan fill="#D6B98C"> 3. Secure Boot enabled</tspan></text>
+  <text x="40" y="210" class="in" style="animation-delay:4.09s" xml:space="preserve"><tspan fill="#A99270">        Locked until the keys above are enrolled.</tspan></text>
+  <text x="40" y="254" class="in" style="animation-delay:4.19s" xml:space="preserve"><tspan fill="#81ADDB" font-weight="700">  What to do:</tspan><tspan fill="#FFFFFF"> Your PC is booting the old way. Convert the disk with mbr2gpt, then switch the firmware from Legacy/CSM to UEFI.</tspan></text>
+  <text x="40" y="298" class="in" style="animation-delay:4.29s" xml:space="preserve"><tspan fill="#FFFFFF" font-weight="700">OTHER REQUIREMENTS</tspan><tspan fill="#A99270">  (any order)</tspan></text>
+  <text x="40" y="320" class="in" style="animation-delay:4.34s" xml:space="preserve"><tspan fill="#D6B98C">  </tspan><tspan fill="#8FC08A" font-weight="700">[x]</tspan><tspan fill="#D6B98C"> TPM chip present</tspan></text>
+  <text x="40" y="342" class="in" style="animation-delay:4.39s" xml:space="preserve"><tspan fill="#D6B98C">  </tspan><tspan fill="#E08A7E" font-weight="700">[ ]</tspan><tspan fill="#D6B98C"> TPM enabled</tspan></text>
+  <text x="40" y="364" class="in" style="animation-delay:4.44s" xml:space="preserve"><tspan fill="#A99270">        Enable the TPM (fTPM/PTT) in the firmware menu.</tspan></text>
+  <text x="40" y="386" class="in" style="animation-delay:4.49s" xml:space="preserve"><tspan fill="#D6B98C">  </tspan><tspan fill="#8FC08A" font-weight="700">[x]</tspan><tspan fill="#D6B98C"> TPM is version 2.0</tspan></text>
+  <text x="40" y="430" class="in" style="animation-delay:4.59s" xml:space="preserve"><tspan fill="#D6B98C">4 item(s) need attention. Start with the boot path above.</tspan></text>
+  <text x="40" y="474" class="in" style="animation-delay:4.99s" xml:space="preserve"><tspan fill="#81ADDB">PS</tspan><tspan fill="#A99270"> C:\Users\logjxn\Projects\sb-audit&gt; </tspan></text>
+  <rect x="360.29" y="460" width="9" height="17" fill="#D6B98C" class="cur" style="animation-delay:4.99s,4.99s"/>
+</svg>
