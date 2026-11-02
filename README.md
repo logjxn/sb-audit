@@ -16,33 +16,6 @@ Requires Windows, Python, and administrator rights.
 python -m sb_audit
 ```
 
-## Sample output
-
-```
-BOOT PATH  (do these in order)
-  [ ] 1. Firmware is in UEFI mode   <- start here
-  [-] 2. Secure Boot keys enrolled
-        Locked until the firmware is in UEFI mode.
-  [-] 3. Secure Boot enabled
-        Locked until the keys above are enrolled.
-
-  What to do: Your PC is booting the old way. Convert the disk with mbr2gpt,
-  then switch the firmware from Legacy/CSM to UEFI.
-
-OTHER REQUIREMENTS  (any order)
-  [x] TPM chip present
-  [ ] TPM enabled
-        Enable the TPM (fTPM/PTT) in the firmware menu.
-  [x] TPM is version 2.0
-
-4 item(s) need attention. Start with the boot path above.
-```
-
-- `[x]` pass
-- `[ ]` fail
-- `[-]` locked
-- `[?]` couldn't be determined.
-
 ## Administrator privileges
 
 Administrator rights are required for accurate hardware and firmware reporting. Without elevation, Windows can return incomplete or misleading results.
